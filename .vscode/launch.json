@@ -1,7 +1,20 @@
 {
     "version": "0.2.0",
     "configurations": [
-
-
+        {
+            "name": "Run C++ App",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/output/main.exe",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": true,
+            "MIMode": "gdb",
+            "miDebuggerPath": "C:/MinGW/bin/gdb.exe",
+            "preLaunchTask": "build-cpp"
+        }
     ]
 }
+

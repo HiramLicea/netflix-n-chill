@@ -27,15 +27,15 @@ int main() {
                 break;
 
             case 2:
-                cout << "\nFUNCION AÚN NO IMPLEMENTADA\n";
+                cout << "\nFUNCION AUN NO IMPLEMENTADA\n";
                 break;
 
             case 3:
-                cout << "\nFUNCION AÚN NO IMPLEMENTADA\n";
+                cout << "\nFUNCION AUN NO IMPLEMENTADA\n";
                 break;
 
             case 4:
-                cout << "\nFUNCION AÚN NO IMPLEMENTADA\n";
+                cout << "\nFUNCION AUN NO IMPLEMENTADA\n";
                 break;
 
             case 5:
