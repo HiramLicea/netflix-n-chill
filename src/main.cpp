@@ -23,21 +23,10 @@ int main() {
 
         switch (opcion) {
             case 1:
-                mostrarPeliculas(peliculas, totalPeliculas);  //actualmente solo sirve para cargar el .csv
+                mostrarPeliculas(peliculas, totalPeliculas);
                 break;
 
             case 2:
-<<<<<<< HEAD
-                cout << "\nFUNCION AUN NO IMPLEMENTADA\n";
-                break;
-
-            case 3:
-                cout << "\nFUNCION AUN NO IMPLEMENTADA\n";
-                break;
-
-            case 4:
-                cout << "\nFUNCION AUN NO IMPLEMENTADA\n";
-=======
                 cout << "\nFUNCION AÚN NO IMPLEMENTADA\n";
                 break;
 
@@ -46,8 +35,7 @@ int main() {
                 break;
 
             case 4:
-                cout << "\nFUNCION AÚN NO IMPLEMENTADA\n";
->>>>>>> main
+                  generarRecomendaciones(1, peliculas, totalPeliculas);
                 break;
 
             case 5:
