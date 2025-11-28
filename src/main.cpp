@@ -27,6 +27,7 @@ int main() {
                 break;
 
             case 2:
+<<<<<<< HEAD
                 cout << "\nFUNCION AUN NO IMPLEMENTADA\n";
                 break;
 
@@ -36,6 +37,17 @@ int main() {
 
             case 4:
                 cout << "\nFUNCION AUN NO IMPLEMENTADA\n";
+=======
+                cout << "\nFUNCION AÚN NO IMPLEMENTADA\n";
+                break;
+
+            case 3:
+                cout << "\nFUNCION AÚN NO IMPLEMENTADA\n";
+                break;
+
+            case 4:
+                cout << "\nFUNCION AÚN NO IMPLEMENTADA\n";
+>>>>>>> main
                 break;
 
             case 5:

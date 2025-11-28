@@ -12,6 +12,7 @@ using namespace std;
 void cargarPeliculas(Pelicula peliculas[], int &totalPeliculas) {
     totalPeliculas = 0;  //no hay peliculas cargadas por lo tanto igual a 0
 
+<<<<<<< HEAD
    ifstream archivo("data/peliculas.csv");//funcion de la libreria fstream para cargar el .csv con los datos limpios,"archivo" es un objeto de tipo ifstream.
    if (!archivo.is_open()) {
     cout << "ERROR: No se pudo abrir el archivo CSV\n";
@@ -19,6 +20,10 @@ void cargarPeliculas(Pelicula peliculas[], int &totalPeliculas) {
 else {
     cout << "Archivo CSV cargado correctamente\n";
 }
+=======
+    ifstream archivo("../data/peliculas.csv");  //funcion de la libreria fstream para cargar el .csv con los datos limpios,"archivo" es un objeto de tipo ifstream.
+
+>>>>>>> main
 
     char linea[400];  //arreglo linea que ira guardando linea por linea que se lee del archivo .csv
     archivo.getline(linea, 400); //sirve para obtener solo la primera fila del .csv la cual queremos evitar procesar (ID, Tiulo, etc...)
@@ -47,11 +52,19 @@ else {
 //Esta función recibe la lista de películas ya cargadas y el número total de películas para imprimirlas.
 //La funcion recibe un arreglo peliculas[] de tipo Pelicula, este fue definido en pelicus.h, cada elemento del arreglo es un struct Pelicula completo
 void mostrarPeliculas(Pelicula peliculas[], int totalPeliculas) {
+<<<<<<< HEAD
     cout << "\nLISTA DE PELICULAS\n";
+=======
+    cout << "\nLISTA DE PELÍCULAS\n";
+>>>>>>> main
     for (int i = 0; i < totalPeliculas; i++) {
         cout << peliculas[i].id << " | "
              << peliculas[i].titulo << " | "
              << peliculas[i].genero << " | "
              << peliculas[i].anio << "\n";
     }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> main

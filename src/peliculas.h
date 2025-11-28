@@ -14,4 +14,8 @@ const int MAX_PELICULAS = 100;
 void cargarPeliculas(Pelicula peliculas[], int &totalPeliculas); //definimos funcion que carga las peliculas desde el dataset
 void mostrarPeliculas(Pelicula peliculas[], int totalPeliculas); //definimos funcion para mostrar peliculas
 
+<<<<<<< HEAD
 #endif
+=======
+#endif
+>>>>>>> main
