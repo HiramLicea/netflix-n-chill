@@ -2,24 +2,26 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "build-cpp",
+            "label": "Compilar proyecto",
             "type": "shell",
-            "command": "cmd.exe",
+            "command": "g++",
             "args": [
-                "/c",
-                "g++ C:\\Users\\Toshiba\\netflix-n-chill\\src\\*.cpp -o C:\\Users\\Toshiba\\netflix-n-chill\\src\\output\\main.exe -Wall -Wextra -g"
+                "C:/Users/Toshiba/netflix-n-chill/src/*.cpp",
+                "-o",
+                "C:/Users/Toshiba/netflix-n-chill/src/output/main.exe",
+                "-Wall",
+                "-Wextra",
+                "-g"
             ],
-            "options": {
-                "shell": {
-                    "executable": "cmd.exe",
-                    "args": ["/c"]
-                }
-            },
             "group": {
                 "kind": "build",
                 "isDefault": true
             },
-            "problemMatcher": ["$gcc"]
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            },
+            "problemMatcher": "$gcc"
         }
     ]
 }
