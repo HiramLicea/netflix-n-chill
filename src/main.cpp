@@ -2,7 +2,8 @@
 #include "peliculas.h"
 using namespace std;
 
-int main() {
+int main()
+{
     Pelicula peliculas[MAX_PELICULAS];
     int totalPeliculas = 0;
 
@@ -10,7 +11,8 @@ int main() {
 
     int opcion;
 
-    do {
+    do
+    {
         cout << "\n MENU PRINCIPAL \n";
         cout << "1. Gestionar peliculas\n";
         cout << "2. Registrar nuevo usuario\n";
@@ -21,29 +23,30 @@ int main() {
         cout << "Elige una opcion: ";
         cin >> opcion;
 
-        switch (opcion) {
-            case 1:
-                mostrarPeliculas(peliculas, totalPeliculas);  //actualmente solo sirve para cargar el .csv
-                break;
+        switch (opcion)
+        {
+        case 1:
+            mostrarPeliculas(peliculas, totalPeliculas); // actualmente solo sirve para cargar el .csv
+            break;
 
-            case 2:
-                cout << "\nFUNCION AÚN NO IMPLEMENTADA\n";
-                break;
+        case 2:
+            cout << "\nFUNCION AÚN NO IMPLEMENTADA\n";
+            break;
 
-            case 3:
-                cout << "\nFUNCION AÚN NO IMPLEMENTADA\n";
-                break;
+        case 3:
+            cout << "\nFUNCION AÚN NO IMPLEMENTADA\n";
+            break;
 
-            case 4:
-                cout << "\nFUNCION AÚN NO IMPLEMENTADA\n";
-                break;
+        case 4:
+            cout << "\nFUNCION AÚN NO IMPLEMENTADA\n";
+            break;
 
-            case 5:
-                cout << "Saliendo...\n";
-                break;
+        case 5:
+            cout << "Saliendo...\n";
+            break;
 
-            default:
-                cout << "Opcion invalida.\n";
+        default:
+            cout << "Opcion invalida.\n";
         }
 
     } while (opcion != 5);
