@@ -1,5 +1,6 @@
 #ifndef PELICULAS_H
 #define PELICULAS_H
+#include "usuarios.h"
 
 struct Pelicula
 {
@@ -9,10 +10,21 @@ struct Pelicula
     int anio;
 };
 
-// definimos un maximo de 100 peliculas solo para ir probando pero el dataset "peliculas.csv" contiene 45,000 peliculas
 const int MAX_PELICULAS = 100;
 
-void cargarPeliculas(Pelicula peliculas[], int &totalPeliculas); // definimos funcion que carga las peliculas desde el dataset
-void mostrarPeliculas(Pelicula peliculas[], int totalPeliculas); // definimos funcion para mostrar peliculas
+void cargarPeliculas(Pelicula peliculas[], int &totalPeliculas);
+void mostrarPeliculas(Pelicula peliculas[], int totalPeliculas);
+
+void modificarPelicula(Pelicula peliculas[], int totalPeliculas);
+void eliminarPelicula(Pelicula peliculas[], int &totalPeliculas);
+
+void eliminarPelicula(Pelicula peliculas[], int &totalPeliculas, int idEliminar,
+                      Usuario usuarios[], int totalUsuarios);
+
+int buscarPeliculaPorID(Pelicula peliculas[], int totalPeliculas, int id);
+
+bool peliculaConCalificaciones(int idPelicula, Usuario usuarios[], int totalUsuarios);
+
+void generarRecomendaciones(int usuarioId, Pelicula peliculas[], int totalPeliculas);
 
 #endif

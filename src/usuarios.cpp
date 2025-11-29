@@ -1,6 +1,11 @@
 #include "usuarios.h"
 #include <iostream>
 #include <cstring>
+#include "peliculas.h"
+#include "usuarios.h"
+
+Usuario usuarios[MAX_USUARIOS];
+int totalUsuarios = 0;
 
 using namespace std;
 
