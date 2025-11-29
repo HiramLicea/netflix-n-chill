@@ -13,7 +13,7 @@ void cargarPeliculas(Pelicula peliculas[], int &totalPeliculas)
 {
     totalPeliculas = 0; // no hay peliculas cargadas por lo tanto igual a 0
 
-    ifstream archivo("data/peliculas.csv"); // funcion de la libreria fstream para cargar el .csv con los datos limpios,"archivo" es un objeto de tipo ifstream.
+    ifstream archivo("../data/peliculas.csv"); // funcion de la libreria fstream para cargar el .csv con los datos limpios,"archivo" es un objeto de tipo ifstream.
     if (!archivo.is_open())
     {
         cout << "ERROR: No se pudo abrir el archivo CSV\n";
@@ -52,7 +52,7 @@ void cargarPeliculas(Pelicula peliculas[], int &totalPeliculas)
 // La funcion recibe un arreglo peliculas[] de tipo Pelicula, este fue definido en pelicus.h, cada elemento del arreglo es un struct Pelicula completo
 void mostrarPeliculas(Pelicula peliculas[], int totalPeliculas)
 {
-    cout << "\nLISTA DE PELÍCULAS\n";
+    cout << "\nLISTA DE PELICULAS\n";
     for (int i = 0; i < totalPeliculas; i++)
     {
         cout << peliculas[i].id << " | "

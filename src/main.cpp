@@ -1,11 +1,15 @@
 #include <iostream>
 #include "peliculas.h"
+#include "usuarios.h"
 using namespace std;
 
 int main()
 {
     Pelicula peliculas[MAX_PELICULAS];
     int totalPeliculas = 0;
+
+    Usuario usuarios[MAX_PELICULAS];
+    int totalUsuarios = 0;
 
     cargarPeliculas(peliculas, totalPeliculas);
 
@@ -30,15 +34,15 @@ int main()
             break;
 
         case 2:
-            cout << "\nFUNCION AÚN NO IMPLEMENTADA\n";
+            registrarUsuario(usuarios, totalUsuarios);
             break;
 
         case 3:
-            cout << "\nFUNCION AÚN NO IMPLEMENTADA\n";
+            calificarPelicula(usuarios, totalUsuarios, peliculas, totalPeliculas);
             break;
 
         case 4:
-            cout << "\nFUNCION AÚN NO IMPLEMENTADA\n";
+            cout << "\nFUNCION AUN NO IMPLEMENTADA\n";
             break;
 
         case 5:

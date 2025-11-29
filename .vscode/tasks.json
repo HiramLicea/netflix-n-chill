@@ -4,22 +4,20 @@
         {
             "label": "build-cpp",
             "type": "shell",
-            "command": "cmd.exe",
+            "command": "g++",
             "args": [
-                "/c",
-                "g++ C:\\Users\\Toshiba\\netflix-n-chill\\src\\*.cpp -o C:\\Users\\Toshiba\\netflix-n-chill\\src\\output\\main.exe -Wall -Wextra -g"
+                "-g",
+                "${workspaceFolder}/src/*.cpp", 
+                "-o",
+                "${workspaceFolder}/src/main.exe"
             ],
-            "options": {
-                "shell": {
-                    "executable": "cmd.exe",
-                    "args": ["/c"]
-                }
-            },
             "group": {
                 "kind": "build",
                 "isDefault": true
             },
-            "problemMatcher": ["$gcc"]
+            "problemMatcher": [
+                "$gcc"
+            ]
         }
     ]
 }
