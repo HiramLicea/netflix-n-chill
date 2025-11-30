@@ -9,4 +9,3 @@ void guardarRating(int userId, int movieId, int rating);
 void cargarRatings(Usuario usuarios[], int totalUsuarios);
 
 #endif
-NETFLIX_N_CHILL_RATINGS_H

@@ -27,7 +27,7 @@ void cargarRatings(Usuario usuarios[], int totalUsuarios) {
     ifstream file("ratings.csv");
 
     if (!file.is_open()) {
-        cout << "ratings.csv no existe o está vacío. Creando uno nuevo...\n";
+        cout << "ratings.csv no existe o esta vacío. Creando uno nuevo...\n";
         ofstream crear("ratings.csv");
         crear.close();
         return;

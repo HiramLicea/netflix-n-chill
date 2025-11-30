@@ -15,7 +15,7 @@ void guardarRating(int userId, int movieId, int rating) {
 void cargarRatings(Usuario usuarios[], int totalUsuarios) {
     std::ifstream file("ratings.csv");
     if (!file.is_open()) {
-        std::cout << "No se pudo abrir ratings.csv (puede estar vacío)\n";
+        std::cout << "No se pudo abrir ratings.csv (puede estar vacio)\n";
         return;
     }
 

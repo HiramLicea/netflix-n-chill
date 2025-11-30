@@ -6,9 +6,10 @@
 
 Usuario usuarios[MAX_USUARIOS];
 int totalUsuarios = 0;
-
-
 using namespace std;
+
+void guardarRating(int userId, int movieId, int rating);
+void cargarRatings(Usuario usuarios[], int totalUsuarios);
 
 void registrarUsuario(Usuario usuarios[], int &totalUsuarios)
 {
@@ -48,7 +49,7 @@ void calificarPelicula(Usuario usuarios[], int totalUsuarios, Pelicula peliculas
     cout << "Ingrese el ID de la pelicula a calificar: ";
     cin >> idPelicula;
 
-    int indicePelicula = -1; // Ubicacion de la pelicula
+    int indicePelicula = -1;
     bool peliculaEncontrada = false;
 
     for (int i = 0; i < totalPeliculas; i++)
@@ -56,7 +57,7 @@ void calificarPelicula(Usuario usuarios[], int totalUsuarios, Pelicula peliculas
         if (peliculas[i].id == idPelicula)
         {
             peliculaEncontrada = true;
-            indicePelicula = i; // Indice para mostrar datos despues
+            indicePelicula = i;
             break;
         }
     }
@@ -67,7 +68,7 @@ void calificarPelicula(Usuario usuarios[], int totalUsuarios, Pelicula peliculas
         return;
     }
 
-    // Datos de pelicula encontrada
+    // Mostrar info y promedio
     float promedioActual = promedioPelicula(idPelicula, usuarios, totalUsuarios);
     cout << "\n--- DATOS DE LA PELICULA ---" << endl;
     cout << "Titulo: " << peliculas[indicePelicula].titulo << endl;
@@ -99,8 +100,12 @@ void calificarPelicula(Usuario usuarios[], int totalUsuarios, Pelicula peliculas
     usuarios[indiceUsuario].calificaciones[usuarios[indiceUsuario].numCalificaciones] = nuevaCalificacion;
     usuarios[indiceUsuario].numCalificaciones++;
 
-    cout << "Pelicula calificada exitosamente." << endl;
+    // Guardar en CSV
+    guardarRating(idUsuario, idPelicula, puntuacion);
+
+    cout << "Pelicula calificada exitosamente.\n";
 }
+
 
 float promedioPelicula(int idPelicula, Usuario usuarios[], int totalUsuarios)
 {

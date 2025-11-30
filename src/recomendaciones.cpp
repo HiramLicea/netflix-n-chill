@@ -136,8 +136,5 @@ void generarRecomendaciones(int idUsuario,
             }
         }
     }
-
-    // --- mostrar top ---
-    cout << "\nTOP RECOMENDACIONES:\n";
-    mostrarTopRecomendaciones(recs, n);
+    
 }
