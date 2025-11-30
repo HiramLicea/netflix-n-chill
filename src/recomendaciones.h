@@ -1,6 +1,6 @@
 #ifndef RECOMENDACIONES_H
 #define RECOMENDACIONES_H
-#include "usuarios.h"
+
 #include "peliculas.h"
 #include "hashTable.h"
 

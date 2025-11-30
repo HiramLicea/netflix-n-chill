@@ -1,6 +1,5 @@
 #include <iostream>
 #include <cmath>
-
 #include "recomendaciones.h"
 #include "usuarios.h"
 #include "peliculas.h"
@@ -9,142 +8,136 @@
 using namespace std;
 
 // ---------------------------------------------------------
-// Construye tabla hash de películas que vio el usuario
+// Construir vector de usuario
 // ---------------------------------------------------------
-void construirTablaHashUsuario(const Usuario &u, HashTable &tabla) {
-
-    for (int i = 0; i < u.numCalificaciones; i++) {
-        int idP = u.calificaciones[i].idPelicula;
-        int score = u.calificaciones[i].puntuacion;
-
-        hashInsert(tabla, idP, score);
-    }
-}
-
-// ---------------------------------------------------------
-bool usuarioYaVioPeliculaHash(const HashTable &tabla, int idPelicula) {
-    return hashContains(tabla, idPelicula);
-}
-
-// ---------------------------------------------------------
-void VectorUsuario(const Usuario &u, int totalPeliculas, int vect[]) {
-
+void construirVectorUsuario(const Usuario &u, int totalPeliculas, int vect[], unordered_map<int,int> &mapa) {
     for (int i = 0; i < totalPeliculas; i++)
         vect[i] = -1;
 
-    for (int i = 0; i < u.numCalificaciones; i++) {
-        int id = u.calificaciones[i].idPelicula;
-
-        if (mapaPeliculas.count(id)) {
-            int idx = mapaPeliculas[id];
-            vect[idx] = u.calificaciones[i].puntuacion;
+    for (int k = 0; k < u.numCalificaciones; k++) {
+        int id = u.calificaciones[k].idPelicula;
+        if (mapa.count(id)) {
+            vect[ mapa[id] ] = u.calificaciones[k].puntuacion;
         }
     }
 }
 
 // ---------------------------------------------------------
 double calcularSimilitudUsuarios(const Usuario &u1, const Usuario &u2) {
+    extern int totalPeliculas;
+    extern unordered_map<int,int> mapaPeliculas;
 
-    int v1[200], v2[200];
-    VectorUsuario(u1, totalPeliculas, v1);
-    VectorUsuario(u2, totalPeliculas, v2);
+    int v1[300], v2[300];
+
+    construirVectorUsuario(u1, totalPeliculas, v1, mapaPeliculas);
+    construirVectorUsuario(u2, totalPeliculas, v2, mapaPeliculas);
 
     double dot = 0, mag1 = 0, mag2 = 0;
 
     for (int i = 0; i < totalPeliculas; i++) {
-
-        int r1 = v1[i];
-        int r2 = v2[i];
-
-        if (r1 != -1 && r2 != -1) {
-            dot += r1 * r2;
-            mag1 += r1 * r1;
-            mag2 += r2 * r2;
+        if (v1[i] != -1 && v2[i] != -1) {
+            dot += v1[i] * v2[i];
+            mag1 += v1[i] * v1[i];
+            mag2 += v2[i] * v2[i];
         }
     }
 
     if (mag1 == 0 || mag2 == 0) return 0;
-
     return dot / (sqrt(mag1) * sqrt(mag2));
 }
-// ---------------------------------------------------------
-bool usuarioYaVioPelicula(int userId, int movieId, Usuario usuarios[], int totalUsuarios) {
-    int idxU = buscarUsuarioPorID(userId, usuarios, totalUsuarios);
-    if (idxU == -1) return false;
 
-    for (int k = 0; k < usuarios[idxU].numCalificaciones; k++) {
-        if (usuarios[idxU].calificaciones[k].idPelicula == movieId)
-            return true;
+// ---------------------------------------------------------
+void mostrarTopRecomendaciones(Recomendacion r[], int total) {
+    for (int i = 0; i < total; i++) {
+        cout << i+1 << ". Pelicula ID " << r[i].idPelicula
+             << "  | Puntaje = " << r[i].puntaje << "\n";
     }
-    return false;
 }
-// ---------------------------------------------------------
-void generarRecomendaciones(int idUsuario, Usuario usuarios[], int totalUsuarios,Pelicula peliculas[], int totalPeliculas)
-{
-    cout << "\n*** GENERANDO RECOMENDACIONES BASADAS EN COSENO ***\n";
 
-    int idxActual = buscarUsuarioPorID(idUsuario, usuarios, totalUsuarios);
-    if (idxActual == -1) {
+// ---------------------------------------------------------
+void generarRecomendaciones(int idUsuario,
+                            Usuario usuarios[],
+                            int totalUsuarios,
+                            Pelicula peliculas[],
+                            int totalPeliculas)
+{
+    cout << "\nGENERANDO RECOMENDACIONES...\n\n";
+
+    int idxU = buscarUsuarioPorID(idUsuario, usuarios, totalUsuarios);
+    if (idxU == -1) {
         cout << "Usuario no encontrado.\n";
         return;
     }
 
-    // Buscar usuario más parecido
+    extern unordered_map<int,int> mapaPeliculas;
+
+    // --- encontrar usuario más similar ---
     double mejorSim = -1;
-    int usuarioSimilar = -1;
+    int idxSim = -1;
 
     for (int i = 0; i < totalUsuarios; i++) {
-        if (i == idxActual) continue;
+        if (i == idxU) continue;
 
-        double sim = calcularSimilitudUsuarios(usuarios[idxActual], usuarios[i]);
-
-
-        if (sim > mejorSim) {
-            mejorSim = sim;
-            usuarioSimilar = i;
+        double s = calcularSimilitudUsuarios(usuarios[idxU], usuarios[i]);
+        if (s > mejorSim) {
+            mejorSim = s;
+            idxSim = i;
         }
     }
 
-    if (usuarioSimilar == -1 || mejorSim <= 0) {
-        cout << "No hay suficientes datos para recomendar.\n";
+    if (idxSim == -1 || mejorSim <= 0) {
+        cout << "No hay suficientes datos.\n";
         return;
     }
 
-    cout << "\nUsuario más similar: "
-         << usuarios[usuarioSimilar].nombre
-         << " (Similitud = " << mejorSim << ")\n\n";
+    cout << "Usuario similar: " << usuarios[idxSim].nombre
+         << " (sim=" << mejorSim << ")\n\n";
 
-    cout << "--- RECOMENDACIONES ---\n";
+    // --- usar HashTable para saber lo que el usuario ya vio ---
+    HashTable tablaVistas;
 
-    bool encontro = false;
+    for (int i = 0; i < usuarios[idxU].numCalificaciones; i++) {
+        int idP = usuarios[idxU].calificaciones[i].idPelicula;
+        hashInsert(tablaVistas, idP, 1);
+    }
 
-    // Recorrer calificaciones del usuario similar
-    for (int c = 0; c < usuarios[usuarioSimilar].numCalificaciones; c++) {
+    // --- recolectar recomendaciones ---
+    Recomendacion recs[200];
+    int n = 0;
 
-        int idPeliSimilar = usuarios[usuarioSimilar].calificaciones[c].idPelicula;
-        int califSimilar  = usuarios[usuarioSimilar].calificaciones[c].puntuacion;
+    for (int i = 0; i < usuarios[idxSim].numCalificaciones; i++) {
 
-        if (califSimilar < 4) continue;  // Solo recomendar películas buenas
-        if (usuarioYaVioPelicula(idUsuario, idPeliSimilar, usuarios, totalUsuarios)) continue;
+        int idP = usuarios[idxSim].calificaciones[i].idPelicula;
+        int calif = usuarios[idxSim].calificaciones[i].puntuacion;
 
-        // Usar tabla hash para encontrar la película
-        if (mapaPeliculas.count(idPeliSimilar)) {
+        if (calif < 4) continue;              // solo buenas
+        if (hashContains(tablaVistas, idP)) continue; // filtrar vistas
 
-            int indexPeli = mapaPeliculas[idPeliSimilar];
+        if (mapaPeliculas.count(idP)) {
 
-            cout << "- " << peliculas[indexPeli].titulo
-                 << "  | Calificacion del usuario similar: "
-                 << califSimilar << "\n";
+            double puntaje = calif * mejorSim;
 
-            encontro = true;
+            recs[n++] = { idP, puntaje };
         }
     }
 
-    if (!encontro)
-        cout << "No hay recomendaciones disponibles.\n";
-}
+    if (n == 0) {
+        cout << "No hay recomendaciones.\n";
+        return;
+    }
 
-// ---------------------------------------------------------
-void mostrarTopRecomendaciones() {
-    cout << "Funcion mostrarTopRecomendaciones aun no implementada.\n";
+    // --- ordenar con burbuja ---
+    for (int i = 0; i < n-1; i++) {
+        for (int j = 0; j < n-1-i; j++) {
+            if (recs[j].puntaje < recs[j+1].puntaje) {
+                Recomendacion temp = recs[j];
+                recs[j] = recs[j+1];
+                recs[j+1] = temp;
+            }
+        }
+    }
+
+    // --- mostrar top ---
+    cout << "\nTOP RECOMENDACIONES:\n";
+    mostrarTopRecomendaciones(recs, n);
 }
