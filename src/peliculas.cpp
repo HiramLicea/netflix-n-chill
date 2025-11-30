@@ -10,6 +10,12 @@
 #include <cstring>
 using namespace std;
 
+Pelicula peliculas[MAX_PELICULAS];
+int totalPeliculas = 0;
+
+std::unordered_map<int, int> mapaPeliculas;
+
+
 void cargarPeliculas(Pelicula peliculas[], int &totalPeliculas)
 {
     totalPeliculas = 0; // no hay peliculas cargadas por lo tanto igual a 0
@@ -22,7 +28,17 @@ void cargarPeliculas(Pelicula peliculas[], int &totalPeliculas)
     else
     {
         cout << "Archivo CSV cargado correctamente\n";
+
+        mapaPeliculas.clear();  // Limpia para evitar basura previa
+
+    for (int i = 0; i < totalPeliculas; i++) {
+        mapaPeliculas[peliculas[i].id] = i;
     }
+
+    }
+
+
+
 
     char linea[400];             // arreglo linea que ira guardando linea por linea que se lee del archivo .csv
     archivo.getline(linea, 400); // sirve para obtener solo la primera fila del .csv la cual queremos evitar procesar (ID, Tiulo, etc...)

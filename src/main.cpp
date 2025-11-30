@@ -1,17 +1,19 @@
 #include <iostream>
 #include "peliculas.h"
 #include "usuarios.h"
+#include "recomendaciones.h"
 using namespace std;
 
 int main() {
 
+    // Arreglos principales
     Pelicula peliculas[MAX_PELICULAS];
     int totalPeliculas = 0;
 
     Usuario usuarios[MAX_USUARIOS];
     int totalUsuarios = 0;
 
-
+    // Cargar catálogo inicial
     cargarPeliculas(peliculas, totalPeliculas);
 
     int opcion;
@@ -28,6 +30,8 @@ int main() {
         cin >> opcion;
 
         switch (opcion) {
+
+        // -------- GESTION DE PELICULAS --------
         case 1: {
             int opPeli;
             cout << "\n--- GESTION DE PELICULAS ---\n";
@@ -43,9 +47,11 @@ int main() {
             case 1:
                 mostrarPeliculas(peliculas, totalPeliculas);
                 break;
+
             case 2:
                 modificarPelicula(peliculas, totalPeliculas);
                 break;
+
             case 3: {
                 int idEliminar;
                 cout << "ID a eliminar: ";
@@ -53,8 +59,8 @@ int main() {
                 eliminarPelicula(peliculas, totalPeliculas, idEliminar, usuarios, totalUsuarios);
                 break;
             }
+
             case 4: {
-                // AGREGAR PELÍCULA NUEVA
                 if (totalPeliculas >= MAX_PELICULAS) {
                     cout << "Limite de peliculas alcanzado.\n";
                 } else {
@@ -62,10 +68,13 @@ int main() {
                     cout << "ID: ";
                     cin >> nueva.id;
                     cin.ignore();
+
                     cout << "Titulo: ";
                     cin.getline(nueva.titulo, 200);
+
                     cout << "Genero: ";
                     cin.getline(nueva.genero, 100);
+
                     cout << "Año: ";
                     cin >> nueva.anio;
 
@@ -76,6 +85,7 @@ int main() {
                 }
                 break;
             }
+
             case 5:
                 break;
 
@@ -85,20 +95,23 @@ int main() {
             break;
         }
 
+        // -------- REGISTRO DE USUARIO --------
         case 2:
             registrarUsuario(usuarios, totalUsuarios);
             break;
 
+        // -------- CALIFICAR PELICULA --------
         case 3:
             calificarPelicula(usuarios, totalUsuarios, peliculas, totalPeliculas);
             break;
 
+        // -------- SOLICITAR RECOMENDACIONES --------
         case 4: {
             int idU;
             cout << "Ingrese el ID del usuario para recomendar: ";
             cin >> idU;
 
-            generarRecomendaciones(idU, peliculas, totalPeliculas);
+            generarRecomendaciones(idU, usuarios, totalUsuarios, peliculas, totalPeliculas);
             break;
         }
 
