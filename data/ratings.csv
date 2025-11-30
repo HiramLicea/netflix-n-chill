@@ -1,0 +1,51 @@
+#include <fstream>
+#include <sstream>
+
+void guardarRating(int userId, int movieId, int rating) {
+    std::ofstream file("ratings.csv", std::ios::app); // append
+    if (!file.is_open()) {
+        std::cout << "Error al abrir ratings.csv\n";
+        return;
+    }
+
+    file << userId << "," << movieId << "," << rating << "\n";
+    file.close();
+}
+
+void cargarRatings(Usuario usuarios[], int totalUsuarios) {
+    std::ifstream file("ratings.csv");
+    if (!file.is_open()) {
+        std::cout << "No se pudo abrir ratings.csv (puede estar vacío)\n";
+        return;
+    }
+
+    std::string linea;
+    while (std::getline(file, linea)) {
+        std::stringstream ss(linea);
+        std::string userStr, movieStr, ratingStr;
+
+        std::getline(ss, userStr, ',');
+        std::getline(ss, movieStr, ',');
+        std::getline(ss, ratingStr, ',');
+
+        int userId   = std::stoi(userStr);
+        int movieId  = std::stoi(movieStr);
+        int rating   = std::stoi(ratingStr);
+
+        // Buscar ese usuario en tu arreglo
+        for (int i = 0; i < totalUsuarios; i++) {
+            if (usuarios[i].id == userId) {
+
+                // Agregar la calificación al usuario
+                int idx = usuarios[i].totalRatings;
+                usuarios[i].ratings[idx].idPelicula = movieId;
+                usuarios[i].ratings[idx].calificacion = rating;
+                usuarios[i].totalRatings++;
+
+                break;
+            }
+        }
+    }
+
+    file.close();
+}

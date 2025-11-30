@@ -2,6 +2,8 @@
 #include "peliculas.h"
 #include "usuarios.h"
 #include "recomendaciones.h"
+#include "ratings.h"
+
 using namespace std;
 
 int main() {
@@ -15,6 +17,8 @@ int main() {
 
     // Cargar catálogo inicial
     cargarPeliculas(peliculas, totalPeliculas);
+
+    cargarRatings(usuarios, totalUsuarios);
 
     int opcion;
 
