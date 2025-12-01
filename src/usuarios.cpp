@@ -2,14 +2,9 @@
 #include <iostream>
 #include <cstring>
 #include "peliculas.h"
-#include "usuarios.h"
+#include "ratings.h"
 
-Usuario usuarios[MAX_USUARIOS];
-int totalUsuarios = 0;
 using namespace std;
-
-void guardarRating(int userId, int movieId, int rating);
-void cargarRatings(Usuario usuarios[], int totalUsuarios);
 
 void registrarUsuario(Usuario usuarios[], int &totalUsuarios)
 {
@@ -20,7 +15,7 @@ void registrarUsuario(Usuario usuarios[], int &totalUsuarios)
     }
 
     Usuario nuevoUsuario;
-    nuevoUsuario.id = totalUsuarios + 1; // Asignar un ID unico
+    nuevoUsuario.id = totalUsuarios + 1;
     cout << "Ingrese el nombre del usuario: ";
     cin.ignore();
     cin.getline(nuevoUsuario.nombre, 100);
@@ -68,7 +63,6 @@ void calificarPelicula(Usuario usuarios[], int totalUsuarios, Pelicula peliculas
         return;
     }
 
-    // Mostrar info y promedio
     float promedioActual = promedioPelicula(idPelicula, usuarios, totalUsuarios);
     cout << "\n--- DATOS DE LA PELICULA ---" << endl;
     cout << "Titulo: " << peliculas[indicePelicula].titulo << endl;
@@ -100,7 +94,6 @@ void calificarPelicula(Usuario usuarios[], int totalUsuarios, Pelicula peliculas
     usuarios[indiceUsuario].calificaciones[usuarios[indiceUsuario].numCalificaciones] = nuevaCalificacion;
     usuarios[indiceUsuario].numCalificaciones++;
 
-    // Guardar en CSV
     guardarRating(idUsuario, idPelicula, puntuacion);
 
     cout << "Pelicula calificada exitosamente.\n";
@@ -125,7 +118,7 @@ float promedioPelicula(int idPelicula, Usuario usuarios[], int totalUsuarios)
 
     if (contadorPuntuaciones == 0)
     {
-        return 0.0f; // No hay calificaciones
+        return 0.0f;
     }
 
     return static_cast<float>(sumaPuntuaciones) / contadorPuntuaciones;

@@ -1,68 +1,82 @@
 #include "ratings.h"
+#include "usuarios.h"
 #include <fstream>
 #include <sstream>
 #include <iostream>
+#include <cstdlib>
 
 using namespace std;
 
-// -------------------------------------------------------------
-// Guarda un rating en ratings.csv (append)
-// -------------------------------------------------------------
-void guardarRating(int userId, int movieId, int rating) {
+void guardarRating(int userId, int movieId, int rating)
+{
     ofstream file("ratings.csv", ios::app);
 
-    if (!file.is_open()) {
-        cout << "Error al abrir ratings.csv para escribir\n";
-        return;
+    if (!file.is_open())
+    {
+        file.open("ratings.csv", ios::app);
     }
 
-    file << userId << "," << movieId << "," << rating << "\n";
-    file.close();
+    if (file.is_open())
+    {
+        file << userId << "," << movieId << "," << rating << "\n";
+        file.close();
+    }
 }
 
-// -------------------------------------------------------------
-// Cargar ratings desde ratings.csv hacia las estructuras
-// -------------------------------------------------------------
-void cargarRatings(Usuario usuarios[], int totalUsuarios) {
+void cargarRatings(Usuario usuarios[], int totalUsuarios)
+{
     ifstream file("ratings.csv");
 
-    if (!file.is_open()) {
-        cout << "ratings.csv no existe o esta vacío. Creando uno nuevo...\n";
-        ofstream crear("ratings.csv");
-        crear.close();
+    if (!file.is_open())
+    {
+        file.open("ratings.csv");
+    }
+
+    if (!file.is_open())
+    {
         return;
     }
 
     string linea;
+    int cargados = 0;
 
-    while (getline(file, linea)) {
-        if (linea == "") continue;
+    while (getline(file, linea))
+    {
+        if (linea.length() < 3)
+            continue;
 
         stringstream ss(linea);
         string uStr, pStr, rStr;
 
-        getline(ss, uStr, ',');
-        getline(ss, pStr, ',');
-        getline(ss, rStr, ',');
+        if (!getline(ss, uStr, ','))
+            continue;
+        if (!getline(ss, pStr, ','))
+            continue;
+        if (!getline(ss, rStr, ','))
+            continue;
 
-        int userId  = stoi(uStr);
-        int movieId = stoi(pStr);
-        int rating  = stoi(rStr);
+        int userId = atoi(uStr.c_str());
+        int movieId = atoi(pStr.c_str());
+        int rating = atoi(rStr.c_str());
 
-        // Buscar al usuario correspondiente
-        for (int i = 0; i < totalUsuarios; i++) {
-            if (usuarios[i].id == userId) {
+        if (userId == 0 && movieId == 0)
+            continue;
 
-                int idx = usuarios[i].numCalificaciones;
-
-                usuarios[i].calificaciones[idx].idPelicula = movieId;
-                usuarios[i].calificaciones[idx].puntuacion  = rating;
-                usuarios[i].numCalificaciones++;
-
+        for (int i = 0; i < totalUsuarios; i++)
+        {
+            if (usuarios[i].id == userId)
+            {
+                if (usuarios[i].numCalificaciones < MAX_PELICULAS_VISTAS)
+                {
+                    int idx = usuarios[i].numCalificaciones;
+                    usuarios[i].calificaciones[idx].idPelicula = movieId;
+                    usuarios[i].calificaciones[idx].puntuacion = rating;
+                    usuarios[i].numCalificaciones++;
+                    cargados++;
+                }
                 break;
             }
         }
     }
-
     file.close();
 }

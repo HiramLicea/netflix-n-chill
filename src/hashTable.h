@@ -3,15 +3,17 @@
 
 #include <vector>
 
-struct HashEntry {
-    int key;       // idPelicula
-    int value;     // puntuación
+struct HashEntry
+{
+    int key;   // idPelicula
+    int value; // puntuación
     bool used;
 
     HashEntry() : key(0), value(0), used(false) {}
 };
 
-struct HashTable {
+struct HashTable
+{
     static const int SIZE = 503; // primo
     HashEntry table[SIZE];
 };

@@ -1,16 +1,20 @@
 #include "hashTable.h"
 
-int hashFunc(int key) {
+int hashFunc(int key)
+{
     return key % HashTable::SIZE;
 }
 
-void hashInsert(HashTable &ht, int key, int value) {
+void hashInsert(HashTable &ht, int key, int value)
+{
     int index = hashFunc(key);
 
-    for (int i = 0; i < HashTable::SIZE; i++) {
+    for (int i = 0; i < HashTable::SIZE; i++)
+    {
         int pos = (index + i) % HashTable::SIZE;
 
-        if (!ht.table[pos].used) {
+        if (!ht.table[pos].used)
+        {
             ht.table[pos].used = true;
             ht.table[pos].key = key;
             ht.table[pos].value = value;
@@ -19,10 +23,12 @@ void hashInsert(HashTable &ht, int key, int value) {
     }
 }
 
-bool hashContains(const HashTable &ht, int key) {
+bool hashContains(const HashTable &ht, int key)
+{
     int index = hashFunc(key);
 
-    for (int i = 0; i < HashTable::SIZE; i++) {
+    for (int i = 0; i < HashTable::SIZE; i++)
+    {
         int pos = (index + i) % HashTable::SIZE;
 
         if (!ht.table[pos].used)
@@ -34,10 +40,12 @@ bool hashContains(const HashTable &ht, int key) {
     return false;
 }
 
-int hashGet(const HashTable &ht, int key) {
+int hashGet(const HashTable &ht, int key)
+{
     int index = hashFunc(key);
 
-    for (int i = 0; i < HashTable::SIZE; i++) {
+    for (int i = 0; i < HashTable::SIZE; i++)
+    {
         int pos = (index + i) % HashTable::SIZE;
 
         if (!ht.table[pos].used)
