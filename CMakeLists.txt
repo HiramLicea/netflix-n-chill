@@ -10,4 +10,8 @@ add_executable(netflix_n_chill
         src/peliculas.cpp
         src/peliculas.h
         src/usuarios.cpp
-        src/usuarios.h)
+        src/usuarios.h
+        src/hashTable.cpp
+        src/recomendaciones.cpp
+        src/ratings.cpp
+        src/ratings.h)

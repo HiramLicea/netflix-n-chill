@@ -2,22 +2,27 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "build-cpp",
+            "label": "Compilar proyecto",
             "type": "shell",
             "command": "g++",
             "args": [
-                "-g",
-                "${workspaceFolder}/src/*.cpp", 
+                "-std=c++17",
+                "${workspaceFolder}/src/main.cpp",
+                "${workspaceFolder}/src/hashTable.cpp",
+                "${workspaceFolder}/src/usuario.cpp",
+                "${workspaceFolder}/src/recomendador.cpp",
                 "-o",
-                "${workspaceFolder}/src/main.exe"
+                "${workspaceFolder}/src/output/netflix.exe"
             ],
             "group": {
                 "kind": "build",
                 "isDefault": true
             },
-            "problemMatcher": [
-                "$gcc"
-            ]
+            "presentation": {
+                "reveal": "always",
+                "panel": "shared"
+            },
+            "problemMatcher": "$gcc"
         }
     ]
 }

@@ -1,6 +1,10 @@
 #ifndef PELICULAS_H
 #define PELICULAS_H
 
+#include <unordered_map>
+
+#define MAX_PELICULAS 200
+
 struct Pelicula {
     int id;
     char titulo[200];
@@ -8,10 +12,26 @@ struct Pelicula {
     int anio;
 };
 
-//definimos un maximo de 100 peliculas solo para ir probando pero el dataset "peliculas.csv" contiene 45,000 peliculas
-const int MAX_PELICULAS = 100;
+// Forward declaration para evitar includes circulares
+struct Usuario;
 
-void cargarPeliculas(Pelicula peliculas[], int &totalPeliculas); //definimos funcion que carga las peliculas desde el dataset
-void mostrarPeliculas(Pelicula peliculas[], int totalPeliculas); //definimos funcion para mostrar peliculas
+// Hash global: id -> índice en arreglo peliculas[]
+extern std::unordered_map<int, int> mapaPeliculas;
+
+extern Pelicula peliculas[MAX_PELICULAS];
+extern int totalPeliculas;
+
+// Prototipos (firmas unificadas)
+void cargarPeliculas(Pelicula peliculas[], int &totalPeliculas);
+void mostrarPeliculas(Pelicula peliculas[], int totalPeliculas);
+
+void modificarPelicula(Pelicula peliculas[], int totalPeliculas);
+void eliminarPelicula(Pelicula peliculas[], int &totalPeliculas);
+
+// Variante de eliminar que verifica usuarios (no obligatorio si no lo usas)
+void eliminarPelicula(Pelicula peliculas[], int &totalPeliculas, int idEliminar, Usuario usuarios[], int totalUsuarios);
+
+int buscarPeliculaPorID(Pelicula peliculas[], int totalPeliculas, int idBuscado);
+bool peliculaConCalificaciones(int idPelicula, struct Usuario usuarios[], int totalUsuarios);
 
 #endif
