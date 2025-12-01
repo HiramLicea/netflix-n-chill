@@ -3,19 +3,22 @@
 
 #include "peliculas.h"
 #include "usuarios.h"
+#include "hashTable.h"
 
-// Verifica si el usuario ya vio/calificó la película
-bool usuarioYaVioPelicula(int userId, int movieId);
+// Estructura de recomendación
+struct Recomendacion
+{
+    int idPelicula;
+    double puntaje;
+};
 
-// Calcula similitud REAL entre usuarios (coseno)
-double calcularSimilitudUsuarios(const Usuario &u1, const Usuario &u2, int totalPeliculas);
+// Función de similitud
+double calcularSimilitudUsuarios(const Usuario &u1, const Usuario &u2);
 
-// Genera recomendaciones para un usuario
-void generarRecomendaciones(int userId,
-                            Pelicula peliculas[],
-                            int totalPeliculas);
+// Función principal
+void generarRecomendaciones(int idUsuario, Usuario usuarios[], int totalUsuarios, Pelicula peliculas[], int totalPeliculas);
 
-// Mostrar top (si quieres ordenar después)
-void mostrarTopRecomendaciones();
+// Función auxiliar para mostrar (Ahora recibe usuarios para el promedio)
+void mostrarTopRecomendaciones(Recomendacion r[], int total, Pelicula peliculas[], int totalPeliculas, Usuario usuarios[], int totalUsuarios);
 
 #endif

@@ -1,9 +1,15 @@
 #ifndef USUARIOS_H
 #define USUARIOS_H
+<<<<<<< HEAD
 struct Pelicula;
 
 const int MAX_USUARIOS = 50;
 const int MAX_PELICULAS_VISTAS = 100;
+=======
+#include "peliculas.h"
+#define MAX_USUARIOS 200
+#define MAX_PELICULAS_VISTAS 200
+>>>>>>> 7b97e2e6125ff9075f4b59d38dc1f624b48dbfad
 
 struct Calificacion
 {

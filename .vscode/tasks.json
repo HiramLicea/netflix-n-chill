@@ -6,12 +6,13 @@
             "type": "shell",
             "command": "g++",
             "args": [
-                "C:/Users/Toshiba/netflix-n-chill/src/*.cpp",
+                "-std=c++17",
+                "${workspaceFolder}/src/main.cpp",
+                "${workspaceFolder}/src/hashTable.cpp",
+                "${workspaceFolder}/src/usuario.cpp",
+                "${workspaceFolder}/src/recomendador.cpp",
                 "-o",
-                "C:/Users/Toshiba/netflix-n-chill/src/output/main.exe",
-                "-Wall",
-                "-Wextra",
-                "-g"
+                "${workspaceFolder}/src/output/netflix.exe"
             ],
             "group": {
                 "kind": "build",

@@ -1,11 +1,17 @@
 #include <iostream>
 #include "peliculas.h"
 #include "usuarios.h"
+#include "recomendaciones.h"
+#include "ratings.h"
+
 using namespace std;
 
 int main()
 {
+<<<<<<< HEAD
 
+=======
+>>>>>>> 7b97e2e6125ff9075f4b59d38dc1f624b48dbfad
     Pelicula peliculas[MAX_PELICULAS];
     int totalPeliculas = 0;
 
@@ -13,18 +19,23 @@ int main()
     int totalUsuarios = 0;
 
     cargarPeliculas(peliculas, totalPeliculas);
+    cargarRatings(usuarios, totalUsuarios);
 
     int opcion;
 
     do
     {
+<<<<<<< HEAD
         cout << "\n===== MENU PRINCIPAL =====\n";
+=======
+        cout << "\n===== NETFLIX-N-CHILL =====\n";
+>>>>>>> 7b97e2e6125ff9075f4b59d38dc1f624b48dbfad
         cout << "1. Gestionar peliculas\n";
         cout << "2. Registrar nuevo usuario\n";
         cout << "3. Ingresar calificacion\n";
         cout << "4. Solicitar recomendaciones\n";
         cout << "5. Salir\n";
-        cout << "===========================\n";
+        cout << "=============================\n";
         cout << "Elige una opcion: ";
         cin >> opcion;
 
@@ -34,12 +45,12 @@ int main()
         {
             int opPeli;
             cout << "\n--- GESTION DE PELICULAS ---\n";
-            cout << "1. Mostrar peliculas\n";
+            cout << "1. Mostrar catalogo\n";
             cout << "2. Modificar pelicula\n";
             cout << "3. Eliminar pelicula\n";
             cout << "4. Agregar nueva pelicula\n";
             cout << "5. Regresar\n";
-            cout << "Elige una opcion: ";
+            cout << ">> ";
             cin >> opPeli;
 
             switch (opPeli)
@@ -60,11 +71,16 @@ int main()
             }
             case 4:
             {
+<<<<<<< HEAD
                 // AGREGAR PELÍCULA NUEVA
                 if (totalPeliculas >= MAX_PELICULAS)
                 {
                     cout << "Limite de peliculas alcanzado.\n";
                 }
+=======
+                if (totalPeliculas >= MAX_PELICULAS)
+                    cout << "Memoria llena.\n";
+>>>>>>> 7b97e2e6125ff9075f4b59d38dc1f624b48dbfad
                 else
                 {
                     Pelicula nueva;
@@ -77,19 +93,11 @@ int main()
                     cin.getline(nueva.genero, 100);
                     cout << "Año: ";
                     cin >> nueva.anio;
-
-                    peliculas[totalPeliculas] = nueva;
-                    totalPeliculas++;
-
-                    cout << "Pelicula agregada exitosamente.\n";
+                    peliculas[totalPeliculas++] = nueva;
+                    cout << "Guardado.\n";
                 }
                 break;
             }
-            case 5:
-                break;
-
-            default:
-                cout << "Opcion invalida.\n";
             }
             break;
         }
@@ -105,15 +113,14 @@ int main()
         case 4:
         {
             int idU;
-            cout << "Ingrese el ID del usuario para recomendar: ";
+            cout << "Ingrese su ID de usuario: ";
             cin >> idU;
-
-            generarRecomendaciones(idU, peliculas, totalPeliculas);
+            generarRecomendaciones(idU, usuarios, totalUsuarios, peliculas, totalPeliculas);
             break;
         }
 
         case 5:
-            cout << "Saliendo...\n";
+            cout << "Guardando datos y saliendo...\n";
             break;
 
         default:

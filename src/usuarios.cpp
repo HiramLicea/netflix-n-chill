@@ -2,10 +2,14 @@
 #include <iostream>
 #include <cstring>
 #include "peliculas.h"
+<<<<<<< HEAD
 #include "usuarios.h"
 
 Usuario usuarios[MAX_USUARIOS];
 int totalUsuarios = 0;
+=======
+#include "ratings.h"
+>>>>>>> 7b97e2e6125ff9075f4b59d38dc1f624b48dbfad
 
 using namespace std;
 
@@ -18,7 +22,7 @@ void registrarUsuario(Usuario usuarios[], int &totalUsuarios)
     }
 
     Usuario nuevoUsuario;
-    nuevoUsuario.id = totalUsuarios + 1; // Asignar un ID unico
+    nuevoUsuario.id = totalUsuarios + 1;
     cout << "Ingrese el nombre del usuario: ";
     cin.ignore();
     cin.getline(nuevoUsuario.nombre, 100);
@@ -47,7 +51,7 @@ void calificarPelicula(Usuario usuarios[], int totalUsuarios, Pelicula peliculas
     cout << "Ingrese el ID de la pelicula a calificar: ";
     cin >> idPelicula;
 
-    int indicePelicula = -1; // Ubicacion de la pelicula
+    int indicePelicula = -1;
     bool peliculaEncontrada = false;
 
     for (int i = 0; i < totalPeliculas; i++)
@@ -55,7 +59,7 @@ void calificarPelicula(Usuario usuarios[], int totalUsuarios, Pelicula peliculas
         if (peliculas[i].id == idPelicula)
         {
             peliculaEncontrada = true;
-            indicePelicula = i; // Indice para mostrar datos despues
+            indicePelicula = i;
             break;
         }
     }
@@ -66,7 +70,6 @@ void calificarPelicula(Usuario usuarios[], int totalUsuarios, Pelicula peliculas
         return;
     }
 
-    // Datos de pelicula encontrada
     float promedioActual = promedioPelicula(idPelicula, usuarios, totalUsuarios);
     cout << "\n--- DATOS DE LA PELICULA ---" << endl;
     cout << "Titulo: " << peliculas[indicePelicula].titulo << endl;
@@ -98,7 +101,9 @@ void calificarPelicula(Usuario usuarios[], int totalUsuarios, Pelicula peliculas
     usuarios[indiceUsuario].calificaciones[usuarios[indiceUsuario].numCalificaciones] = nuevaCalificacion;
     usuarios[indiceUsuario].numCalificaciones++;
 
-    cout << "Pelicula calificada exitosamente." << endl;
+    guardarRating(idUsuario, idPelicula, puntuacion);
+
+    cout << "Pelicula calificada exitosamente.\n";
 }
 
 float promedioPelicula(int idPelicula, Usuario usuarios[], int totalUsuarios)
@@ -120,7 +125,7 @@ float promedioPelicula(int idPelicula, Usuario usuarios[], int totalUsuarios)
 
     if (contadorPuntuaciones == 0)
     {
-        return 0.0f; // No hay calificaciones
+        return 0.0f;
     }
 
     return static_cast<float>(sumaPuntuaciones) / contadorPuntuaciones;

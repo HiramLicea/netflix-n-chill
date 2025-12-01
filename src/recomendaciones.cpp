@@ -1,192 +1,215 @@
 #include <iostream>
 #include <cmath>
+#include <algorithm>
+#include <cstring> // Para strstr
 #include "recomendaciones.h"
 #include "usuarios.h"
+#include "peliculas.h"
+#include "hashTable.h"
+
 using namespace std;
 
-/*
- * Verifica si el usuario ya vio una película.
- * Esto se basa en si la calificación es distinta de -1.
- * -----------------------------------------------------
- * userId: ID del usuario que consulta.
- * movieId: ID de la película a revisar.
- * usuarios[]: arreglo global con todos los usuarios del sistema.
- */
-bool usuarioYaVioPelicula(int userId, int movieId) {
-    // Buscar usuario por ID
-    for (int i = 0; i < totalUsuarios; i++) {
-        if (usuarios[i].id == userId) {
+int partition(Recomendacion arr[], int low, int high)
+{
+    double pivot = arr[high].puntaje;
+    int i = low - 1;
 
-            // Buscar película por ID
-            for (int j = 0; j < MAX_PELICULAS; j++) {
-                if (j == movieId) {
-                    return usuarios[i].calificaciones[j].puntuacion != -1;
-                }
-            }
+    for (int j = low; j < high; j++)
+    {
+        if (arr[j].puntaje > pivot)
+        {
+            i++;
+            Recomendacion temp = arr[i];
+            arr[i] = arr[j];
+            arr[j] = temp;
         }
     }
-    return false;
+    Recomendacion temp = arr[i + 1];
+    arr[i + 1] = arr[high];
+    arr[high] = temp;
+    return (i + 1);
 }
 
-/*
- * Calcula la similitud entre un usuario y una película
- * usando un método provisional (dummy).
- * Más adelante se reemplaza con Coseno de Similaridad real
- * basado en calificaciones de usuarios similares.
- * ---------------------------------------------------------
- * movieId: ID de la película.
- * userId: ID del usuario.
- */
-double similitudDummy(int movieId, int userId) {
-    return 1.0;  // Placeholder
-}
-
-/*
- * Calcula la similitud entre dos usuarios usando
- * COSENO DE SIMILITUD REAL.
- * --------------------------------------------------------
- * u1 y u2: estructuras Usuario a comparar.
- * totalPeliculas: cuántas películas existen.
- */
-
-void VectorUsuario(const Usuario &u, int totalPeliculas, int vectorCalif[]) {
-    // Inicializar todo en -1
-    for (int i = 0; i < totalPeliculas; i++)
-        vectorCalif[i] = -1;
-
-    // Llenar con las calificaciones que sí hizo
-    for (int i = 0; i < u.numCalificaciones; i++) {
-        int id = u.calificaciones[i].idPelicula;  // id real
-        vectorCalif[id - 1] = u.calificaciones[i].puntuacion;
+void quickSort(Recomendacion arr[], int low, int high)
+{
+    if (low < high)
+    {
+        int pi = partition(arr, low, high);
+        quickSort(arr, low, pi - 1);
+        quickSort(arr, pi + 1, high);
     }
 }
 
+void construirVectorUsuario(const Usuario &u, int totalPeliculas, int vect[], unordered_map<int, int> &mapa)
+{
+    for (int i = 0; i < totalPeliculas; i++)
+        vect[i] = -1;
 
-double calcularSimilitudUsuarios(const Usuario &u1, const Usuario &u2, int totalPeliculas) {
+    for (int k = 0; k < u.numCalificaciones; k++)
+    {
+        int id = u.calificaciones[k].idPelicula;
+        if (mapa.count(id))
+        {
+            vect[mapa[id]] = u.calificaciones[k].puntuacion;
+        }
+    }
+}
 
-    int v1[200], v2[200]; // tamaño suficiente
-    VectorUsuario(u1, totalPeliculas, v1);
-    VectorUsuario(u2, totalPeliculas, v2);
+double calcularSimilitudUsuarios(const Usuario &u1, const Usuario &u2)
+{
+    extern int totalPeliculas;
+    extern unordered_map<int, int> mapaPeliculas;
+
+    static int v1[5000];
+    static int v2[5000];
+
+    construirVectorUsuario(u1, totalPeliculas, v1, mapaPeliculas);
+    construirVectorUsuario(u2, totalPeliculas, v2, mapaPeliculas);
 
     double dot = 0, mag1 = 0, mag2 = 0;
 
-    for (int i = 0; i < totalPeliculas; i++) {
-        int r1 = u1.calificaciones[i].puntuacion;
-        int r2 = u2.calificaciones[i].puntuacion;
-
-        if (r1 != -1 && r2 != -1) {  
-            dot += r1 * r2;
-            mag1 += r1 * r1;
-            mag2 += r2 * r2;
+    for (int i = 0; i < totalPeliculas; i++)
+    {
+        if (v1[i] != -1 && v2[i] != -1)
+        {
+            dot += v1[i] * v2[i];
+            mag1 += v1[i] * v1[i];
+            mag2 += v2[i] * v2[i];
         }
     }
 
     if (mag1 == 0 || mag2 == 0)
         return 0;
-
     return dot / (sqrt(mag1) * sqrt(mag2));
 }
 
-
-/*
- * Genera recomendaciones basadas en:
- * - Usuario similar encontrado por Coseno de Similaridad.
- * - Películas que el usuario similar calificó bien.
- * - Películas que el usuario actual NO ha visto.
- * --------------------------------------------------------
- * userId: ID del usuario que solicita recomendaciones.
- * peliculas[]: catálogo de películas.
- * totalPeliculas: cuántas existen.
- */
-void generarRecomendaciones(int userId,
-                            Pelicula peliculas[],
-                            int totalPeliculas)
+void mostrarTopRecomendaciones(Recomendacion r[], int total, Pelicula peliculas[], int totalPeliculas, Usuario usuarios[], int totalUsuarios)
 {
-    cout << "\n*** GENERANDO RECOMENDACIONES BASADAS EN COSENO ***\n";
+    int limite = (total < 5) ? total : 5;
 
-    // Buscar al usuario actual
-    int idxActual = -1;
-    for (int i = 0; i < totalUsuarios; i++) {
-        if (usuarios[i].id == userId) {
-            idxActual = i;
-            break;
-        }
-    }
+    cout << "\n----------------------------------------------------------------------------------\n";
+    cout << "                         TOP RECOMENDACIONES PERSONALIZADAS                        \n";
+    cout << "----------------------------------------------------------------------------------\n";
+    cout << " # | Titulo (Fecha) [Genero]                     | Calif. Promedio | Relevancia \n";
+    cout << "---|--------------------------------------------|-----------------|--------------\n";
 
-    if (idxActual == -1) {
-        cout << "Usuario no encontrado.\n";
-        return;
-    }
-
-    // Buscar usuario más parecido
-    double mejorSim = -1;
-    int usuarioSimilar = -1;
-
-    for (int i = 0; i < totalUsuarios; i++) {
-        if (i == idxActual) continue;
-
-        double sim = calcularSimilitudUsuarios(usuarios[idxActual], usuarios[i], totalPeliculas);
-
-        if (sim > mejorSim) {
-            mejorSim = sim;
-            usuarioSimilar = i;
-        }
-    }
-
-    if (usuarioSimilar == -1 || mejorSim <= 0) {
-        cout << "No hay suficientes datos para recomendar.\n";
-        return;
-    }
-
-    cout << "\nUsuario más similar encontrado: "
-         << usuarios[usuarioSimilar].nombre
-         << " (Similitud = " << mejorSim << ")\n\n";
-
-    cout << "--- RECOMENDACIONES ---\n";
-
-    bool encontro = false;
-
- // Mostrar recomendaciones del usuario más similar
-for (int i = 0; i < usuarios[usuarioSimilar].numCalificaciones; i++) {
-
-    int idPeliSimilar = usuarios[usuarioSimilar].calificaciones[i].idPelicula;
-    int califSimilar = usuarios[usuarioSimilar].calificaciones[i].puntuacion;
-
-    // Solo recomendar si al usuario similar realmente le gusto mucho (>=4)
-    if (califSimilar >= 4) {
-
-        // Verificar si el usuario actual ya la vio
-        bool yaVio = false;
-        for (int j = 0; j < usuarios[idxActual].numCalificaciones; j++) {
-            if (usuarios[idxActual].calificaciones[j].idPelicula == idPeliSimilar) {
-                yaVio = true;
+    for (int i = 0; i < limite; i++)
+    {
+        int indexPeli = -1;
+        for (int p = 0; p < totalPeliculas; p++)
+        {
+            if (peliculas[p].id == r[i].idPelicula)
+            {
+                indexPeli = p;
                 break;
             }
         }
 
-        if (!yaVio) {
+        if (indexPeli != -1)
+        {
+            float prom = promedioPelicula(peliculas[indexPeli].id, usuarios, totalUsuarios);
 
-            // Buscar la película por ID real
-            int indexPeli = -1;
-            for (int p = 0; p < totalPeliculas; p++) {
-                if (peliculas[p].id == idPeliSimilar) {
-                    indexPeli = p;
-                    break;
-                }
-            }
-
-            if (indexPeli != -1) {
-                cout << "- " << peliculas[indexPeli].titulo
-                     << "  | Calificacion del usuario similar: "
-                     << califSimilar << "\n";
-
-                encontro = true;
-            }
+            cout << " " << (i + 1) << " | "
+                 << peliculas[indexPeli].titulo << " (" << peliculas[indexPeli].anio << ") "
+                 << "[" << peliculas[indexPeli].genero << "] | "
+                 << prom << " / 5.0      | "
+                 << (int)(r[i].puntaje * 100) << "%" << endl;
         }
     }
+    cout << "----------------------------------------------------------------------------------\n";
 }
 
-if (!encontro)
-    cout << "No hay recomendaciones disponibles.\n";
-}
+void generarRecomendaciones(int idUsuario, Usuario usuarios[], int totalUsuarios, Pelicula peliculas[], int totalPeliculas)
+{
+    cout << "\n=== SOLICITUD DE RECOMENDACIONES ===\n";
+    int idxU = buscarUsuarioPorID(idUsuario, usuarios, totalUsuarios);
+    if (idxU == -1)
+    {
+        cout << "Usuario no encontrado.\n";
+        return;
+    }
 
+    char generoBuscado[50];
+    int anioMin, anioMax;
+
+    cout << "Ingresa el Genero preferido (ej. Comedy, Action): ";
+    cin.ignore();
+    cin.getline(generoBuscado, 50);
+
+    cout << "Ingresa el rango de fechas.\n";
+    cout << " Desde la fecha: ";
+    cin >> anioMin;
+    cout << " Hasta la fecha: ";
+    cin >> anioMax;
+
+    cout << "\nAnalizando base de datos...\n";
+
+    extern unordered_map<int, int> mapaPeliculas;
+
+    double mejorSim = -1;
+    int idxSim = -1;
+
+    for (int i = 0; i < totalUsuarios; i++)
+    {
+        if (i == idxU)
+            continue;
+        double s = calcularSimilitudUsuarios(usuarios[idxU], usuarios[i]);
+        if (s > mejorSim)
+        {
+            mejorSim = s;
+            idxSim = i;
+        }
+    }
+
+    if (idxSim == -1 || mejorSim <= 0)
+    {
+        cout << "No se encontraron usuarios con gustos similares suficientes.\n";
+        return;
+    }
+
+    cout << ">> Perfil compatible encontrado: " << usuarios[idxSim].nombre
+         << " (Similitud: " << (int)(mejorSim * 100) << "%)\n";
+
+    HashTable tablaVistas;
+    for (int i = 0; i < usuarios[idxU].numCalificaciones; i++)
+    {
+        int idP = usuarios[idxU].calificaciones[i].idPelicula;
+        hashInsert(tablaVistas, idP, 1);
+    }
+
+    Recomendacion recs[200];
+    int n = 0;
+
+    for (int i = 0; i < usuarios[idxSim].numCalificaciones; i++)
+    {
+        int idP = usuarios[idxSim].calificaciones[i].idPelicula;
+        int calif = usuarios[idxSim].calificaciones[i].puntuacion;
+
+        if (calif < 4)
+            continue;
+        if (hashContains(tablaVistas, idP))
+            continue;
+
+        if (mapaPeliculas.count(idP))
+        {
+            int idxPeliArreglo = mapaPeliculas[idP];
+            Pelicula &p = peliculas[idxPeliArreglo];
+
+            if (p.anio < anioMin || p.anio > anioMax)
+                continue;
+            if (generoBuscado[0] != '\0' && strstr(p.genero, generoBuscado) == NULL)
+                continue;
+
+            double puntaje = calif * mejorSim;
+            recs[n++] = {idP, puntaje};
+        }
+    }
+
+    if (n == 0)
+    {
+        cout << "\nNo hay recomendaciones que coincidan con tus filtros.\n";
+        return;
+    }
+    quickSort(recs, 0, n - 1);
+    mostrarTopRecomendaciones(recs, n, peliculas, totalPeliculas, usuarios, totalUsuarios);
+}
