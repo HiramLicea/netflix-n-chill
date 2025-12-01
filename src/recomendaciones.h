@@ -9,16 +9,13 @@
 struct Recomendacion
 {
     int idPelicula;
-    double puntaje;
+    double puntaje; // basado en similitud
 };
 
-// Función de similitud
-double calcularSimilitudUsuarios(const Usuario &u1, const Usuario &u2);
+double calcularSimilitudUsuarios(const Usuario &u1, const Usuario &u2, int totalPeliculas);
 
-// Función principal
 void generarRecomendaciones(int idUsuario, Usuario usuarios[], int totalUsuarios, Pelicula peliculas[], int totalPeliculas);
 
-// Función auxiliar para mostrar (Ahora recibe usuarios para el promedio)
 void mostrarTopRecomendaciones(Recomendacion r[], int total, Pelicula peliculas[], int totalPeliculas, Usuario usuarios[], int totalUsuarios);
 
 #endif

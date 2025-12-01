@@ -49,4 +49,8 @@ void cargarRatings(Usuario usuarios[], int totalUsuarios) {
 
     file.close();
 }
-1,97,4
+1,862,5
+1,8844,5
+2,862,5
+2,8844,5
+2,949,5

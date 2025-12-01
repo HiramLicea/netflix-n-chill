@@ -3,6 +3,7 @@
 #include "usuarios.h"
 #include "recomendaciones.h"
 #include "ratings.h"
+#include <cstring>
 
 using namespace std;
 
@@ -15,6 +16,16 @@ int main()
     int totalUsuarios = 0;
 
     cargarPeliculas(peliculas, totalPeliculas);
+    usuarios[totalUsuarios].id = 1;
+    strcpy(usuarios[totalUsuarios].nombre, "Hiram");
+    usuarios[totalUsuarios].numCalificaciones = 0;
+    totalUsuarios++;
+
+    usuarios[totalUsuarios].id = 2;
+    strcpy(usuarios[totalUsuarios].nombre, "Andre");
+    usuarios[totalUsuarios].numCalificaciones = 0;
+    totalUsuarios++;
+
     cargarRatings(usuarios, totalUsuarios);
 
     int opcion;

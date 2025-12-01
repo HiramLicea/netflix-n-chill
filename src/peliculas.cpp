@@ -3,6 +3,8 @@
 #include <iostream>
 #include <fstream>
 #include <cstring>
+#include <cstdlib>
+
 using namespace std;
 
 Pelicula peliculas[MAX_PELICULAS];
@@ -15,116 +17,99 @@ void cargarPeliculas(Pelicula peliculas[], int &totalPeliculas)
     totalPeliculas = 0;
 
     ifstream archivo("peliculas.csv");
+
     if (!archivo.is_open())
     {
-        cout << "ERROR: No se pudo abrir el archivo CSV\n";
+        cout << "ERROR: No se pudo abrir 'peliculas.csv'.\n";
+        return;
     }
-    else
-    {
-        cout << "Archivo CSV cargado correctamente\n";
 
-        mapaPeliculas.clear();
-
-        for (int i = 0; i < totalPeliculas; i++)
-        {
-            mapaPeliculas[peliculas[i].id] = i;
-        }
-    }
+    mapaPeliculas.clear();
 
     char linea[400];
     archivo.getline(linea, 400);
 
-    // con este ciclo procesaremos todas las peliculas apartir de la segunda fila
     for (int i = 0; i < MAX_PELICULAS; i++)
     {
         if (!archivo.getline(linea, 400))
-            break; // si ya no hay mas filas, el ciclo se detiene
+            break;
 
         char *token = strtok(linea, ",");
+        if (token == NULL)
+            continue;
+
         peliculas[i].id = atoi(token);
 
         token = strtok(NULL, ",");
-        strcpy(peliculas[i].titulo, token);
+        if (token != NULL)
+            strcpy(peliculas[i].titulo, token);
 
         token = strtok(NULL, ",");
-        strcpy(peliculas[i].genero, token);
+        if (token != NULL)
+            strcpy(peliculas[i].genero, token);
 
         token = strtok(NULL, ",");
-        peliculas[i].anio = atoi(token);
+        if (token != NULL)
+            peliculas[i].anio = atoi(token);
 
+        mapaPeliculas[peliculas[i].id] = totalPeliculas;
         totalPeliculas++;
     }
+
+    archivo.close();
 }
 
 void mostrarPeliculas(Pelicula peliculas[], int totalPeliculas)
 {
-    cout << "\nLISTA DE PELICULAS\n";
     for (int i = 0; i < totalPeliculas; i++)
     {
-        cout << peliculas[i].id << " | "
-             << peliculas[i].titulo << " | "
-             << peliculas[i].genero << " | "
-             << peliculas[i].anio << "\n";
+        cout << peliculas[i].id << ". "
+             << peliculas[i].titulo << " ("
+             << peliculas[i].anio << ") ["
+             << peliculas[i].genero << "]\n";
     }
 }
 
 void modificarPelicula(Pelicula peliculas[], int totalPeliculas)
 {
     int id;
-    cout << "Ingrese el ID de la pelicula a modificar: ";
+    cout << "ID a modificar: ";
     cin >> id;
 
-    for (int i = 0; i < totalPeliculas; i++)
+    if (mapaPeliculas.count(id))
     {
-        if (peliculas[i].id == id)
-        {
-            cout << "Titulo actual: " << peliculas[i].titulo << "\nNuevo titulo: ";
-            cin.ignore();
-            cin.getline(peliculas[i].titulo, 200);
+        int i = mapaPeliculas[id];
 
-            cout << "Genero actual: " << peliculas[i].genero << "\nNuevo genero: ";
-            cin.getline(peliculas[i].genero, 100);
+        cout << "Titulo actual: " << peliculas[i].titulo << "\nNuevo titulo: ";
+        cin.ignore();
+        cin.getline(peliculas[i].titulo, 200);
 
-            cout << "Anio actual: " << peliculas[i].anio << "\nNuevo anio: ";
-            cin >> peliculas[i].anio;
+        cout << "Genero actual: " << peliculas[i].genero << "\nNuevo genero: ";
+        cin.getline(peliculas[i].genero, 100);
 
-            cout << "Pelicula modificada correctamente.\n";
-            return;
-        }
+        cout << "Anio actual: " << peliculas[i].anio << "\nNuevo anio: ";
+        cin >> peliculas[i].anio;
+
+        cout << "Pelicula modificada.\n";
     }
-
-    cout << "No existe una pelicula con ese ID.\n";
+    else
+    {
+        cout << "ID no encontrado.\n";
+    }
 }
 
 void eliminarPelicula(Pelicula peliculas[], int &totalPeliculas)
 {
     int id;
-    cout << "Ingrese el ID de la pelicula a eliminar: ";
+    cout << "Ingrese el ID: ";
     cin >> id;
-
-    for (int i = 0; i < totalPeliculas; i++)
-    {
-        if (peliculas[i].id == id)
-        {
-            for (int j = i; j < totalPeliculas - 1; j++)
-            {
-                peliculas[j] = peliculas[j + 1];
-            }
-
-            totalPeliculas--;
-            cout << "Pelicula eliminada correctamente.\n";
-            return;
-        }
-    }
-    cout << "No existe una pelicula con ese ID.\n";
 }
 
-void eliminarPelicula(Pelicula peliculas[], int &totalPeliculas, int idEliminar,
-                      Usuario usuarios[], int totalUsuarios)
+void eliminarPelicula(Pelicula peliculas[], int &totalPeliculas, int idEliminar, Usuario usuarios[], int totalUsuarios)
 {
     if (peliculaConCalificaciones(idEliminar, usuarios, totalUsuarios))
     {
-        cout << "ERROR: No se puede eliminar la pelicula porque tiene calificaciones.\n";
+        cout << "ERROR: Tiene calificaciones asociadas.\n";
         return;
     }
 
@@ -139,10 +124,13 @@ void eliminarPelicula(Pelicula peliculas[], int &totalPeliculas, int idEliminar,
     for (int i = index; i < totalPeliculas - 1; i++)
     {
         peliculas[i] = peliculas[i + 1];
+        mapaPeliculas[peliculas[i].id] = i;
     }
 
+    mapaPeliculas.erase(idEliminar);
+
     totalPeliculas--;
-    cout << "Pelicula eliminada correctamente.\n";
+    cout << "Pelicula eliminada.\n";
 }
 
 bool peliculaConCalificaciones(int idPelicula, Usuario usuarios[], int totalUsuarios)
@@ -153,21 +141,16 @@ bool peliculaConCalificaciones(int idPelicula, Usuario usuarios[], int totalUsua
         {
             if (usuarios[i].calificaciones[j].idPelicula == idPelicula)
             {
-                return true; // La película tiene al menos UNA calificación
+                return true;
             }
         }
     }
-    return false; // No tiene calificaciones
+    return false;
 }
 
 int buscarPeliculaPorID(Pelicula peliculas[], int totalPeliculas, int idBuscado)
 {
-    for (int i = 0; i < totalPeliculas; i++)
-    {
-        if (peliculas[i].id == idBuscado)
-        {
-            return i;
-        }
-    }
+    if (mapaPeliculas.count(idBuscado))
+        return mapaPeliculas[idBuscado];
     return -1;
 }

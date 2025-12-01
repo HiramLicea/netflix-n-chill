@@ -1,7 +1,7 @@
 #include <iostream>
 #include <cmath>
 #include <algorithm>
-#include <cstring> // Para strstr
+#include <cstring>
 #include "recomendaciones.h"
 #include "usuarios.h"
 #include "peliculas.h"
@@ -55,9 +55,8 @@ void construirVectorUsuario(const Usuario &u, int totalPeliculas, int vect[], un
     }
 }
 
-double calcularSimilitudUsuarios(const Usuario &u1, const Usuario &u2)
+double calcularSimilitudUsuarios(const Usuario &u1, const Usuario &u2, int totalPeliculas)
 {
-    extern int totalPeliculas;
     extern unordered_map<int, int> mapaPeliculas;
 
     static int v1[5000];
@@ -87,12 +86,6 @@ void mostrarTopRecomendaciones(Recomendacion r[], int total, Pelicula peliculas[
 {
     int limite = (total < 5) ? total : 5;
 
-    cout << "\n----------------------------------------------------------------------------------\n";
-    cout << "                         TOP RECOMENDACIONES PERSONALIZADAS                        \n";
-    cout << "----------------------------------------------------------------------------------\n";
-    cout << " # | Titulo (Fecha) [Genero]                     | Calif. Promedio | Relevancia \n";
-    cout << "---|--------------------------------------------|-----------------|--------------\n";
-
     for (int i = 0; i < limite; i++)
     {
         int indexPeli = -1;
@@ -109,19 +102,18 @@ void mostrarTopRecomendaciones(Recomendacion r[], int total, Pelicula peliculas[
         {
             float prom = promedioPelicula(peliculas[indexPeli].id, usuarios, totalUsuarios);
 
-            cout << " " << (i + 1) << " | "
-                 << peliculas[indexPeli].titulo << " (" << peliculas[indexPeli].anio << ") "
-                 << "[" << peliculas[indexPeli].genero << "] | "
-                 << prom << " / 5.0      | "
-                 << (int)(r[i].puntaje * 100) << "%" << endl;
+            cout << (i + 1) << ". "
+                 << peliculas[indexPeli].titulo << " ("
+                 << peliculas[indexPeli].anio << ") "
+                 << "[" << peliculas[indexPeli].genero << "] "
+                 << "Calif: " << prom << "/5.0 "
+                 << "Rel: " << (int)(r[i].puntaje * 100) << "%" << endl;
         }
     }
-    cout << "----------------------------------------------------------------------------------\n";
 }
 
 void generarRecomendaciones(int idUsuario, Usuario usuarios[], int totalUsuarios, Pelicula peliculas[], int totalPeliculas)
 {
-    cout << "\n=== SOLICITUD DE RECOMENDACIONES ===\n";
     int idxU = buscarUsuarioPorID(idUsuario, usuarios, totalUsuarios);
     if (idxU == -1)
     {
@@ -132,17 +124,14 @@ void generarRecomendaciones(int idUsuario, Usuario usuarios[], int totalUsuarios
     char generoBuscado[50];
     int anioMin, anioMax;
 
-    cout << "Ingresa el Genero preferido (ej. Comedy, Action): ";
+    cout << "Genero: ";
     cin.ignore();
     cin.getline(generoBuscado, 50);
 
-    cout << "Ingresa el rango de fechas.\n";
-    cout << " Desde la fecha: ";
+    cout << "Fecha inicial: ";
     cin >> anioMin;
-    cout << " Hasta la fecha: ";
+    cout << "Fecha limite: ";
     cin >> anioMax;
-
-    cout << "\nAnalizando base de datos...\n";
 
     extern unordered_map<int, int> mapaPeliculas;
 
@@ -153,7 +142,9 @@ void generarRecomendaciones(int idUsuario, Usuario usuarios[], int totalUsuarios
     {
         if (i == idxU)
             continue;
-        double s = calcularSimilitudUsuarios(usuarios[idxU], usuarios[i]);
+
+        double s = calcularSimilitudUsuarios(usuarios[idxU], usuarios[i], totalPeliculas);
+
         if (s > mejorSim)
         {
             mejorSim = s;
@@ -163,12 +154,9 @@ void generarRecomendaciones(int idUsuario, Usuario usuarios[], int totalUsuarios
 
     if (idxSim == -1 || mejorSim <= 0)
     {
-        cout << "No se encontraron usuarios con gustos similares suficientes.\n";
+        cout << "Sin coincidencias.\n";
         return;
     }
-
-    cout << ">> Perfil compatible encontrado: " << usuarios[idxSim].nombre
-         << " (Similitud: " << (int)(mejorSim * 100) << "%)\n";
 
     HashTable tablaVistas;
     for (int i = 0; i < usuarios[idxU].numCalificaciones; i++)
@@ -197,6 +185,7 @@ void generarRecomendaciones(int idUsuario, Usuario usuarios[], int totalUsuarios
 
             if (p.anio < anioMin || p.anio > anioMax)
                 continue;
+
             if (generoBuscado[0] != '\0' && strstr(p.genero, generoBuscado) == NULL)
                 continue;
 
@@ -207,9 +196,12 @@ void generarRecomendaciones(int idUsuario, Usuario usuarios[], int totalUsuarios
 
     if (n == 0)
     {
-        cout << "\nNo hay recomendaciones que coincidan con tus filtros.\n";
+        cout << "Sin resultados.\n";
         return;
     }
+
     quickSort(recs, 0, n - 1);
+
+    cout << endl;
     mostrarTopRecomendaciones(recs, n, peliculas, totalPeliculas, usuarios, totalUsuarios);
 }

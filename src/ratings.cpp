@@ -3,24 +3,22 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
-#include <cstdlib>
+#include <cstdlib> // Necesario para atoi
 
 using namespace std;
 
 void guardarRating(int userId, int movieId, int rating)
 {
-    ofstream file("ratings.csv", ios::app);
+    ofstream file("ratings.csv", ios::app); // Sin ruta
 
     if (!file.is_open())
     {
-        file.open("ratings.csv", ios::app);
+        cout << "Error: No se pudo abrir ratings.csv para guardar.\n";
+        return;
     }
 
-    if (file.is_open())
-    {
-        file << userId << "," << movieId << "," << rating << "\n";
-        file.close();
-    }
+    file << userId << "," << movieId << "," << rating << "\n";
+    file.close();
 }
 
 void cargarRatings(Usuario usuarios[], int totalUsuarios)
@@ -29,11 +27,7 @@ void cargarRatings(Usuario usuarios[], int totalUsuarios)
 
     if (!file.is_open())
     {
-        file.open("ratings.csv");
-    }
-
-    if (!file.is_open())
-    {
+        cout << "[AVISO] No se encontro archivo de ratings. Se iniciara vacio.\n";
         return;
     }
 
@@ -69,8 +63,10 @@ void cargarRatings(Usuario usuarios[], int totalUsuarios)
                 if (usuarios[i].numCalificaciones < MAX_PELICULAS_VISTAS)
                 {
                     int idx = usuarios[i].numCalificaciones;
+
                     usuarios[i].calificaciones[idx].idPelicula = movieId;
                     usuarios[i].calificaciones[idx].puntuacion = rating;
+
                     usuarios[i].numCalificaciones++;
                     cargados++;
                 }
@@ -78,5 +74,7 @@ void cargarRatings(Usuario usuarios[], int totalUsuarios)
             }
         }
     }
+
     file.close();
+    cout << ">> SISTEMA: Se cargaron " << cargados << " calificaciones del archivo.\n";
 }
